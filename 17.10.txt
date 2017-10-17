@@ -1,0 +1,10 @@
+декоратор - улучшение к функции
+возвращают функции
+
+шаблоны - наследование
+templates index.html base.html supertest.html
+
+сначала исправляем main.py
+потом main.js
+потом в браузере main.js clear cache
+
