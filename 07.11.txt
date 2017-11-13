@@ -1,0 +1,64 @@
+#словари - Neo4j
+
+PythonAnywhere:
+Bash: git clone моё приложение
+Вкладка Web: add new app (не upgrade!)
+Code: файл ...wsgi.py (from ... import ... as application - поменять название на правильное!) + reload
+В папке с приложением:
+cat . gitignore - вывести гитигнор (список того, что гит должен игнорировать)
+virtualenv . env --python=python3.6 - создать новую virtualenv
+.env/bin/activate - активировать virtualenv
+например pip install Flask
+pip freeze - получить requirements
+git pull - подтянуть изменения
+Моки - подставить тестовые данные, чтобы проверить на них (вкладка Databases)
+
+Celery - распределённая очередь заданий (пакет питона):
+Если запросы дольше 5 секунд
+RabbitMq - платформа для Celery (сервер)
+Установить RabbitMqServer 3.6.14.exe
+Command Prompt: rabbitmq-plugins enable rabittmq_management
+http://localhost:15672/ guest, guest
+pip install Flask
+git clone приложение
+$(document).ready(function () {
+кнопка Start - класс старт - повесить на кнопку старт alert click (исправить в main js)
+pip install celery
+! поставить более старую версию Celery==3.1.25
+from celery import Celery
+Тяжёлая вычислительная задача:
+
+def make_celery(app):
+    celery = Celery(app.import_name, backend=app.config['CELERY_RESULT_BACKEND'],
+                    broker=app.config['CELERY_BROKER_URL'])
+    celery.conf.update(app.config)
+    TaskBase = celery.Task
+    class ContextTask(TaskBase):
+        abstract = True
+        def __call__(self, *args, **kwargs):
+            with app.app_context():
+                return TaskBase.__call__(self, *args, **kwargs)
+    celery.Task = ContextTask
+    return celery
+
+app = Flask(__name__
+app.config.update(
+    CELERY_BROKER_URL='redis://localhost',
+    CELERY_RESULT_BACKEND='redis://localhost'
+)
+celery = make_celery(app)
+
+@celery.task()
+def long_calculation():
+	from time import sleep
+	sleep(5)
+	print("Ok")
+
+потом render_template
+
+@app.route('/task')
+long_calculation.delay()
+return 'OK'
+
+запустить вместе с фласковским приложением
+celery -A main.celery worker
