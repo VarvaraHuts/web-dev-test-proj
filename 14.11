@@ -1,0 +1,50 @@
+jsfiddle.net
+jquery cdn
+http://jsfiddle.net/wmmaxsd2/
+collaborate: можно совместно работать над сниппетом
+
+app = Flask(__name__
+app.config.update(
+    CELERY_BROKER_URL='amqp://',
+    CELERY_RESULT_BACKEND='amqp://'
+)
+celery = make_celery(app)
+
+@celery.task()
+def hello():
+	from time import sleep
+	print ('Start task')
+	sleep(5)
+	print ('End task')
+	return 10
+	
+@app.route("/")
+def index():
+	print ('Start function')
+	hello.delay()
+	print ('End function')
+	return "Hello from Flask!"
+	
+celery worker -A main.celery --loglevel=INFO
+
+app.import_name = 'main'
+
+@celery.task()
+def hello(a,b):
+	from time import sleep
+	print ('Start task')
+	sleep(5)
+	print ('End task')
+	return a + b
+	
+@app.route("/")
+def index():
+	print ('Start function')
+	result = hello.delay(1,2).get()
+	print ('End function')
+	return "Hello from Flask!"
+	
+1 задачу запустить на своём шаблоне
+получить её идентификатор
+проверятье ёё состояние
+как только задание выполнилось - кнопка меняет цвет
